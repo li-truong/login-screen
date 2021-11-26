@@ -12,29 +12,29 @@ export class App extends Component {
       event: '',
       description: '',
       data: [{
-        event: 'do something',
+        event: 'Kate\'s Wedding',
         description: 'description 1',
-        timeRemain: 0,
+        timeRemain: 15,
       },
       {
-        event: 'do something1',
+        event: 'My Birthday',
         description: 'description 1',
-        timeRemain: 0,
+        timeRemain: 20,
       },
       {
-        event: 'do something2',
+        event: 'Christmas Day',
         description: 'description 1',
-        timeRemain: 0,
+        timeRemain: 342,
       },
       {
-        event: 'do something3',
+        event: 'Exam',
         description: 'description 1',
-        timeRemain: 0,
+        timeRemain: 149,
       },
       {
-        event: 'do something3',
+        event: 'Exam 2',
         description: 'description 1',
-        timeRemain: 0,
+        timeRemain: 209,
       }]
     }
   }
