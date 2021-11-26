@@ -1,120 +1,187 @@
-import React, { Component } from 'react';
-import {
-  SafeAreaView,
-  StyleSheet,
-  Text,
-  View,
-  Dimensions,
-  Image,
-  TextInput,
-  TouchableOpacity,
-  Alert
-} from 'react-native';
+import React, { Component } from 'react'
+import { Text, View, StyleSheet, KeyboardAvoidingView, TextInput, Modal, Image, Dimensions, SafeAreaView, FlatList, TouchableOpacity } from 'react-native'
 
-const { width, height } = Dimensions.get('screen')
+const { width, height } = Dimensions.get('screen');
 
-class App extends Component {
+export class App extends Component {
+
+  constructor(props) {
+    super(props)
+    this.state = {
+      visible: false,
+      event: '',
+      description: '',
+      data: [{
+        event: 'do something',
+        description: 'description 1',
+        timeRemain: 0,
+      },
+      {
+        event: 'do something1',
+        description: 'description 1',
+        timeRemain: 0,
+      },
+      {
+        event: 'do something2',
+        description: 'description 1',
+        timeRemain: 0,
+      },
+      {
+        event: 'do something3',
+        description: 'description 1',
+        timeRemain: 0,
+      },
+      {
+        event: 'do something3',
+        description: 'description 1',
+        timeRemain: 0,
+      }]
+    }
+  }
+
+  renderItem = ({ item, index }) => (
+    <View style={styles.item}>
+      <Text style={styles.event}> {item.event} </Text>
+      <Text style={styles.description}> {item.description} </Text>
+      <Text style={styles.timeRemain}> {`${item.timeRemain} days remaining`} </Text>
+      <TouchableOpacity
+        onPress={() => {
+          const temp = [...this.state.data]
+          this.setState({ data: temp.filter(item => temp.indexOf(item) !== index) })
+        }}
+        style={styles.delete}>
+        <Image source={require('./assets/delete.png')} style={{ width: 30, height: 30 }} />
+      </TouchableOpacity>
+    </View>
+  )
+
+  onchangeEvent = (text) => {
+    this.setState({ event: text })
+  }
+
+  onchangeDescription = (text) => {
+    this.setState({ description: text })
+  }
+
   render() {
+    const { data } = this.state;
     return (
-      <SafeAreaView style={{ flex: 1 }}>
-        <View style={styles.logoContainer}>
-          <Image source={require('./assets/logo.png')} style={styles.logo} />
-        </View>
-        <View style={styles.signInContainer}>
-          <TextInput
-            style={styles.input}
-            placeholder="Skype Name"
+      <SafeAreaView style={styles.container}>
+        <KeyboardAvoidingView style={styles.container}>
+          <View style={styles.header}>
+            <Text style={styles.headerText}> Date Countdown </Text>
+          </View>
+          <FlatList
+            data={data}
+            renderItem={this.renderItem}
+            keyExtractor={(item, index) => index.toString()}
           />
-          <TextInput
-            style={styles.input}
-            placeholder="Password"
-          />
-          <TouchableOpacity
-            onPress={() => {
-              Alert.alert(
-                "Notification",
-                "Sing in Success !!!",
-                [
-                  {
-                    text: "Cancel",
-                    style: "cancel"
-                  },
-                  { text: "OK" }
-                ]
-              );
-            }}
-          >
-            <View style={styles.button}>
-              <Text style={styles.buttonText}> Sign In </Text>
-            </View>
+          <TouchableOpacity onPress={() => { this.setState({ visible: true }) }} style={styles.add}>
+            <Image source={require('./assets/add.png')} />
           </TouchableOpacity>
-        </View>
-        <View style={styles.bottomContainer}>
-          <View style={styles.bottomItem}>
-            <Text style={styles.bottomText}> Sign in with a Microsoft Account </Text>
-          </View>
-          <View style={styles.bottomItem}>
-            <Text style={styles.bottomText}> Create an Account </Text>
-          </View>
-        </View>
+          <Modal
+            visible={this.state.visible}
+            animationType="slide"
+            transparent={true}
+          >
+            <View style={{
+              flex: 1,
+              backgroundColor: '#000000AA',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}>
+              <TextInput style={styles.input} onChangeText={this.onchangeEvent} value={this.state.event} placeholder='Event' />
+              <TextInput style={styles.input} onChangeText={this.onchangeDescription} value={this.state.description} placeholder='Description' />
+              {/* <TextInput style={styles.input} value={this.state.event} placeholder='Email học sinh' /> */}
+              <TouchableOpacity
+                onPress={() => {
+                  console.log(this.state);
+                  const item = {
+                    event: this.state.event,
+                    description: this.state.description,
+                    timeRemain: 10
+                  }
+                  this.setState({ visible: false, data: [...data, item] })
+                }}
+              >
+                <View
+                  style={styles.button}
+                >
+                  <Text style={styles.headerText}> ADD </Text>
+                </View>
+              </TouchableOpacity>
+            </View>
+          </Modal>
+        </KeyboardAvoidingView>
       </SafeAreaView>
     )
   }
-};
+}
 
 const styles = StyleSheet.create({
-  logoContainer: {
-    flex: 2,
-    alignItems: 'center',
-    justifyContent: 'center'
+  container: {
+    flex: 1
   },
-  logo: {
-    width: width * 0.8,
-    height: height * 0.2,
-    resizeMode: 'contain'
-  },
-  signInContainer: {
-    flex: 3,
-    alignItems: 'center',
-    justifyContent: 'center'
-  },
-  input: {
-    borderColor: '#999999',
-    height: 40,
-    width: width * 0.7,
-    margin: 7,
-    borderWidth: 1,
-    padding: 10,
-    borderRadius: 10
-  },
-  button: {
-    width: width * 0.7,
-    backgroundColor: '#4DA6FF',
-    height: 40,
-    margin: 14,
-    alignItems: 'center',
+  header: {
+    width: width,
+    height: height * 0.08,
+    backgroundColor: '#3f51b5',
     justifyContent: 'center',
-    borderRadius: 20
+    paddingLeft: 10
   },
-  buttonText: {
+  headerText: {
+    color: 'white',
     fontSize: 20,
-    fontWeight: '500',
-    color: 'white'
+    fontWeight: 'bold'
   },
-  bottomContainer: {
-    flex: 2,
-  },
-  bottomItem: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderColor: '#999999',
+  item: {
+    width: width,
+    height: height * 0.15,
+    borderBottomColor: '#bdbdbd',
     borderWidth: 1
   },
-  bottomText: {
-    color: '#4DA6FF',
-    fontSize: 18
+  delete: {
+    position: 'absolute',
+    right: 5,
+    top: 5,
+  },
+  event: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: 'black',
+    marginLeft: 10
+  },
+  description: {
+    marginLeft: 10,
+    fontSize: 18,
+  },
+  timeRemain: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: 'black',
+    textAlign: 'center'
+  },
+  input: {
+    backgroundColor: 'white',
+    width: width * 0.8,
+    height: height * 0.08,
+    borderRadius: 5,
+    marginBottom: 10
+  },
+  add: {
+    position: 'absolute',
+    right: 10,
+    bottom: 10,
+  },
+  button: {
+    width: width * 0.5,
+    height: height * 0.1,
+    backgroundColor: '#3f51b5',
+    borderRadius: 5,
+    alignItems: 'center',
+    justifyContent: 'center'
   }
-});
+})
 
-export default App;
+
+export default App
